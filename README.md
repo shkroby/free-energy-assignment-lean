@@ -1,49 +1,105 @@
 # Free energy of bipartite random assignment — Lean companion
 
-This repository contains **a partial, machine-checked certificate** for Jacob
-Shkrob's [*Free energy of bipartite random assignment*](https://github.com/shkroby/free-energy-assignment/blob/2526291c7b8be51d0993dab0ebd2b13c19015053/main.tex).
-The almost-sure free-energy limit, the optional L¹ limit, and existence and
-uniqueness of the zero-fugacity cavity law are **not yet proved in Lean**.
-[Model.lean](Certificate/Model.lean) states those targets as propositions.
-The reduction theorems state their hypotheses explicitly.
+This repository contains a partial machine-checked certificate for Jacob
+Shkrob's [*Free energy of bipartite random assignment*](https://github.com/shkroby/free-energy-assignment/blob/c5eb385846e037630658169b0eb0db43da14976e/main.tex).
+[Model.lean](Certificate/Model.lean) states the almost-sure pressure limit,
+the additional $L^1$ conclusion under a cost moment, and the zero-fugacity
+cavity-law and Bethe formula assertions. A proof of the combined
+`Certificate.FreeEnergyClaim` remains open in Lean. The separate quenched
+overlap theorem is outside this certificate's scope.
 
-The formal target uses the complete square bipartite graph, with a single
-infinite array of iid real nonnegative costs, CDF asymptotic
-(F(s)\sim \kappa s^d), scale ((\kappa n)^{1/d}), and (d,\beta,\kappa>0).
-It represents the lengths in the cavity recursion by scaled rate-one exponential
-arrivals. The scope is the main free-energy theorem (`thm:main`). It does not
-include the separate quenched overlap theorem added in this manuscript revision.
+The model uses a complete square bipartite graph, a single infinite array
+of iid nonnegative costs, $F(s)\sim \kappa s^d$ at zero, and the length
+scale $(\kappa n)^{1/d}$. The Poisson tree uses rate-one exponential spacings
+at each vertex, with cumulative spacings raised to $1/d$.
 
 ## Verify
 
-Install [elan](https://leanprover-community.github.io/get_started.html), then run:
+Install [elan](https://leanprover-community.github.io/get_started.html) and run
 
 ```sh
 lake exe cache get
 bash scripts/check.sh
 ```
 
-The repository pins Lean 4.33.0 and the matching mathlib release, with exact
-transitive revisions in [lake-manifest.json](lake-manifest.json). The check
-builds the entire library, looks for unproved declarations and placeholders,
-and uses [Audit.lean](Audit.lean) to check transitive kernel axioms for all
-exported theorems and to report them for the main results. It accepts only Lean's usual
-`propext`, `Classical.choice`, and `Quot.sound`. The audit does not turn an
-explicit theorem hypothesis into a proved result.
+The repository pins Lean 4.33.0 and the matching mathlib release.
+[Audit.lean](Audit.lean) checks all exported certificate theorems for
+transitive kernel axioms. It accepts `propext`, `Classical.choice`, and
+`Quot.sound`. The check also rejects proof placeholders and new axiom
+declarations. Explicit theorem hypotheses are visible in their signatures.
 
-## Checked results and their limits
+## Checked proof blocks
 
-| Manuscript argument | Checked Lean result | Remaining input |
-|---|---|---|
-| Rare short edges | [ShortEdges.lean](Certificate/ShortEdges.lean), [Intensity.lean](Certificate/Intensity.lean): the scaled CDF and scalar binomial-to-Poisson limits; the interval masses and pushforward of the intensity | Joint convergence of marked neighborhoods and identification of the exponential arrivals with the point process |
-| Marked Poisson insertion | [PoissonShift.lean](Certificate/PoissonShift.lean): deletion/insertion for a finite Poisson count and independent marks | Identify the full marked arrival process and pass from finite intensity to this process |
-| Tree calculation | [Tree.lean](Certificate/Tree.lean), [TreeBoundary.lean](Certificate/TreeBoundary.lean): finite deletion, edge insertion, logarithmic derivative as a sum of monomer marginals, cutoff bound, and nested boundary limits satisfying the crossed recursions. [TreeBipartite.lean](Certificate/TreeBipartite.lean) identifies the tree and completion encodings on finite bipartite graphs. [SoftUniqueness.lean](Certificate/SoftUniqueness.lean) proves extremal equality given the two insertion identities | The insertion identities for those messages on the concrete tree, local limit, finite-graph concentration, and the positive-fugacity Bethe formula |
-| Weighted completion | [CompletionPath.lean](Certificate/CompletionPath.lean), [CompletionModel.lean](Certificate/CompletionModel.lean): augmenting path flip, deterministic weighted counting with change and length budgets, and identification of the zero-deficit coefficient with the permanent | Random uniform expansion and row-weight events, and the construction and total budget of the successive paths on those events |
-| Removing monomers | [Removal.lean](Certificate/Removal.lean), [Assembly.lean](Certificate/Assembly.lean): the real-exponent uniform pressure gap and the almost-sure transfer by Borel–Cantelli for the actual assignment model | The positive-fugacity limits, convergence of their deterministic values, and the required probabilistic completion estimates |
-| Cavity law and simplex inequality | [Simplex.lean](Certificate/Simplex.lean), [Comparison.lean](Certificate/Comparison.lean), [Endpoints.lean](Certificate/Endpoints.lean): the full strict finite/countable simplex inequality, endpoint identities, equality from nonnegative-test endpoint exchange ([ComparisonIntegrability.lean](Certificate/ComparisonIntegrability.lean)), and recovery of identical laws from matching occupations and invariant independent child differences | Uniform log-tail estimates, tightness and passage through the marked series, existence of the invariant coupling, and the marked Poisson exchange on that coupling |
-| L¹ convergence | [CompletionCyclic.lean](Certificate/CompletionCyclic.lean): independence of cyclic assignments and the moment-based tail bound; [Integrability.lean](Certificate/Integrability.lean): the L¹ transfer from a uniformly L²-bounded part and a vanishing L¹ error | The estimates deriving the bounded part and vanishing error for the pressure from the row weights and membership in the exceptional events |
-| Passing to the pressure formula | [PressureFormula.lean](Certificate/PressureFormula.lean): integrability of the exact exponential intensity envelope, and dominated convergence of the two-term formula | The random-message estimates establishing the envelope and convergence of the expected log messages and edge corrections |
+- **Weighted completion on the iid array.** The formal proof establishes
+  logarithmic-cutoff expansion, short augmenting paths for every deficit,
+  total edge and length budgets, and a row-weight bound. The resulting
+  measurable exceptional events have probability at most $4n^{-B}$
+  eventually, for any fixed $B\ge 0$. The certificate gives the deficit
+  coefficient comparison and a bound on the negative pressure on the good
+  events. See [CompletionExpansionFinal.lean](Certificate/CompletionExpansionFinal.lean).
+- **Removing monomers and upgrading convergence.** The convergence of
+  deterministic positive-fugacity pressure limits implies existence of
+  a finite hard limit and almost-sure convergence to it. The row-weight
+  second-moment estimate and the cyclic-assignment negative-tail estimate
+  then yield the manuscript's $L^1$ conclusion. Both limits follow from
+  the stated local-vacancy convergence hypothesis.
+  See [PressureFromLocal.lean](Certificate/PressureFromLocal.lean),
+  [CompletionTransfer.lean](Certificate/CompletionTransfer.lean), and
+  [PressureL1.lean](Certificate/PressureL1.lean).
+- **Finite monomer pressure.** The finite deletion identity gives the
+  logarithmic derivative and integral formula, and iterated deletion gives
+  rigorous bounds at every depth. Expected long-edge weights control the
+  pressure cutoff uniformly in graph size. Independent rows give the
+  bounded-differences estimate and almost-sure concentration for the actual
+  cost array.
+  See [FiniteRootBounds.lean](Certificate/FiniteRootBounds.lean),
+  [SoftExpected.lean](Certificate/SoftExpected.lean),
+  [SoftAssignment.lean](Certificate/SoftAssignment.lean), and
+  [SoftConcentrationLimit.lean](Certificate/SoftConcentrationLimit.lean).
+- **One-step neighborhood laws.** Retained labels and marks have an exact
+  product formula. Exposing a fixed finite collection of row and column
+  roots with connecting entries deleted gives independent counts whose
+  joint point probabilities converge to those of independent Poisson counts.
+  See [LocalExplorationPattern.lean](Certificate/LocalExplorationPattern.lean)
+  and [LocalExplorationLimits.lean](Certificate/LocalExplorationLimits.lean).
+- **Canonical marked arrivals.** The full Mecke insertion identity holds
+  for any iid measurable mark law and nonnegative measurable test of the
+  selected point and the remaining configuration. Each measurable
+  finite-intensity count has its exact Poisson law. The same arrival model
+  supports the stretched-log-tail series criterion and omitted-weight
+  probability bound. See
+  [PoissonArrivalMecke.lean](Certificate/PoissonArrivalMecke.lean),
+  [PoissonArrivalCount.lean](Certificate/PoissonArrivalCount.lean),
+  [ArrivalTails.lean](Certificate/ArrivalTails.lean), and
+  [ArrivalTruncation.lean](Certificate/ArrivalTruncation.lean).
+- **Tree messages with monomers.** The canonical tree has iid independent
+  root branches and summable outgoing weights. Its extremal boundary
+  sequences satisfy the crossed laws, and the marked insertion identity
+  forces their limits to agree. The resulting canonical root law is the
+  unique bounded positive-fugacity fixed point. The cutoff root messages
+  converge to it almost surely and in expectation.
+  See [SoftFixedPoint.lean](Certificate/SoftFixedPoint.lean) and
+  [CanonicalCutoffLimit.lean](Certificate/CanonicalCutoffLimit.lean).
+- **Zero-fugacity comparison and Bethe limits.** The pair-marked insertion
+  identity gives full endpoint exchange. The countable probability-vector
+  inequality then gives equal occupations and equal marginal laws for an
+  invariant positive coupling with square-integrable log messages. The
+  set of couplings with fixed marginals is weakly compact. A stretched
+  upper log tail and a second moment give the integrable edge envelope
+  used in the final dominated-convergence step.
+  See [ArrivalHardCoupling.lean](Certificate/ArrivalHardCoupling.lean),
+  [CavityCouplingCompact.lean](Certificate/CavityCouplingCompact.lean),
+  [CavityTightness.lean](Certificate/CavityTightness.lean),
+  [BetheEdgeTail.lean](Certificate/BetheEdgeTail.lean), and
+  [PressureFormula.lean](Certificate/PressureFormula.lean).
 
-A full certificate would export a theorem of type `Certificate.FreeEnergyClaim`
-and pass the same axiom audit on that theorem. This repository does not yet
-contain such a theorem.
+## Remaining links in the manuscript proof
+
+The one-step exposure laws, scaled edge asymptotics and finite-graph
+deletion bounds need to be assembled into convergence of the weighted,
+fixed-depth neighborhoods and then the finite-graph local-vacancy profile.
+The positive-fugacity Bethe derivative calculation still needs its
+integrated endpoint exchange on the coupled process. The zero-fugacity
+argument still needs uniform two-sided control of the logarithmic tails,
+passage from weak convergence of marks to convergence of the recursion,
+and existence of an invariant coupling for two candidate laws.

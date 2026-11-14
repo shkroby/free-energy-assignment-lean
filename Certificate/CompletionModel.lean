@@ -48,7 +48,8 @@ theorem assignmentPartition_eq_sum_perfectWeight (β d κ : ℝ) (n : ℕ) (C : 
   congr 1
   ring
 
-private theorem allMatched_iff_permutation {n : ℕ} (m : Fin n → Option (Fin n)) :
+/-- A zero-deficit partial matching is a permutation. -/
+theorem mem_matchingsAtDeficit_zero_iff_permutation {n : ℕ} (m : Fin n → Option (Fin n)) :
     m ∈ matchingsAtDeficit n 0 ↔ ∃ p : Equiv.Perm (Fin n), (fun i => some (p i)) = m := by
   classical
   constructor
@@ -87,7 +88,7 @@ theorem deficitPartition_zero (β d κ : ℝ) (n : ℕ) (C : CostArray) :
     exact Equiv.ext fun i => Option.some.inj (congrFun hpq i)
   have heq : matchingsAtDeficit n 0 = univ.image rows := by
     ext m
-    rw [allMatched_iff_permutation, Finset.mem_image]
+    rw [mem_matchingsAtDeficit_zero_iff_permutation, Finset.mem_image]
     simp [rows]
   rw [deficitPartition, assignmentPartition_eq_sum_perfectWeight, heq, Finset.sum_image hinj.injOn]
   rfl
