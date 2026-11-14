@@ -1,0 +1,15 @@
+name = "free_energy_assignment"
+version = "0.1.0"
+keywords = ["math", "probability"]
+defaultTargets = ["Certificate"]
+
+[leanOptions]
+autoImplicit = false
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.33.0"
+
+[[lean_lib]]
+name = "Certificate"
