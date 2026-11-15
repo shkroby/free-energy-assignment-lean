@@ -7,8 +7,8 @@ import Certificate.LocalAssignmentBracketLimits
 /-!
 # Reduction of the manuscript's main theorem
 
-Convergence of local vacancy at each fixed length cutoff is the remaining
-input to the full free-energy theorem.
+This reduction expresses the local input to the free-energy theorem as
+convergence of the expected vacancy brackets at each fixed length cutoff.
 -/
 
 open Filter MeasureTheory Set

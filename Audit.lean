@@ -95,3 +95,7 @@ run_cmd do
 #print axioms Certificate.LocalExploration.tendsto_scaled_labelledNeighborhood_mass
 #print axioms Certificate.LocalExploration.eventually_integral_short_rootedSimplePathCount_le
 #print axioms Certificate.freeEnergyClaim_of_cutoff_bracket_limits
+#print axioms Certificate.CanonicalTree.integral_depthFor_eq_cutoffShapeMixture
+#print axioms Certificate.CanonicalTree.tendsto_expected_cutoffRowBracket_mixture
+#print axioms Certificate.CanonicalTree.tendsto_expected_cutoffMeanRootBounds
+#print axioms Certificate.freeEnergyClaim

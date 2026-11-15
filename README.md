@@ -1,18 +1,21 @@
 # Free energy of bipartite random assignment — Lean companion
 
 Machine-checked companion to Jacob Shkrob's
-[*Free energy of bipartite random assignment*](https://github.com/shkroby/free-energy-assignment/blob/c5eb385846e037630658169b0eb0db43da14976e/main.tex).
+[*Thermodynamic limit of the bipartite random assignment problem*](https://github.com/shkroby/free-energy-assignment/blob/30a07cac13c213fe6337722b3626c411ff246eee/main.tex).
 The model uses a square bipartite graph with an infinite array of iid
 nonnegative costs, $F(s)\sim\kappa s^d$ at zero, and length scale
 $(\kappa n)^{1/d}$. The Poisson tree uses independent rate-one exponential
 spacings at each vertex, with cumulative spacings raised to $1/d$.
 
-[MainReduction.lean](Certificate/MainReduction.lean) proves the hard
-cavity-law assertion unconditionally and derives every conclusion in
-`Certificate.FreeEnergyClaim` from one remaining input. That input is
-convergence of the expected lower and upper vacancy brackets at each
-fixed depth and integer length cutoff. The separate quenched overlap
-theorem is outside this certificate's scope.
+[FreeEnergy.lean](Certificate/FreeEnergy.lean) proves
+`Certificate.freeEnergyClaim : Certificate.FreeEnergyClaim` with no local-limit
+hypothesis. It establishes the Bethe pressure formula and almost-sure
+convergence for every $d>0$ and inverse temperature $\beta>0$. A finite
+positive-order cost moment gives eventual integrability and $L^1$ convergence.
+[Model.lean](Certificate/Model.lean) gives the exact statement and
+[MainReduction.lean](Certificate/MainReduction.lean) proves the hard cavity-law
+existence and uniqueness assertion independently. The companion covers the
+free-energy theorem. The manuscript's quenched overlap corollary is separate.
 
 ## Verify
 
@@ -70,26 +73,15 @@ declarations. Explicit hypotheses remain visible in the theorem statements.
   See [CanonicalHardExistence.lean](Certificate/CanonicalHardExistence.lean),
   [HardInvariantCoupling.lean](Certificate/HardInvariantCoupling.lean),
   and [CanonicalHardBethe.lean](Certificate/CanonicalHardBethe.lean).
-- **Finite neighborhoods.** The one-root retained count and its
-  conditional mark vector have the joint Poisson and iid mark limit.
-  The fresh entries after a fixed exploration history retain their
-  product law. Lean also verifies the labelled neighborhood cylinder
-  probability, its per-placement asymptotics, the expected simple-path
-  count, and the finite deletion bounds. Weighted isomorphism and
-  continuity give the comparison of vacancy brackets on a fixed shape.
-  See [LocalExplorationRetainedMarks.lean](Certificate/LocalExplorationRetainedMarks.lean),
-  [LocalExplorationHistory.lean](Certificate/LocalExplorationHistory.lean),
-  [LocalTreeShapeMass.lean](Certificate/LocalTreeShapeMass.lean),
-  [LocalExplorationSize.lean](Certificate/LocalExplorationSize.lean),
-  and [TreeBracketContinuity.lean](Certificate/TreeBracketContinuity.lean).
-
-## Remaining proof
-
-The multi-generation neighborhood argument still needs to identify the
-weighted rooted shape distribution of the finite cutoff graph with its
-canonical Poisson-tree limit. In particular, the labelled-placement
-probabilities and test-function results need to be assembled into the
-two expected bracket limits in
-[freeEnergyClaim_of_cutoff_bracket_limits](Certificate/MainReduction.lean).
-The unconditional proposition `Certificate.FreeEnergyClaim` remains
-unproved in Lean.
+- **The multi-generation cutoff limit.** Lean counts all injective placements
+  of a fixed plane shape with its children sorted by label. Conditional on
+  each placement, the retained lengths have their iid product law. Their
+  bounded continuous bracket test is exactly the original finite graph
+  bracket on that event. The disjoint shape probabilities converge to the
+  canonical Poisson probabilities, which sum to one. An auxiliary tree with
+  independent cutoff lengths has the same bracket law as the canonical
+  tree and gives the same shape mixture. Exchangeability identifies the
+  expected bracket at any pinned root with the expected root average.
+  See [FiniteLocalBracketLimit.lean](Certificate/FiniteLocalBracketLimit.lean),
+  [IndependentShapeBracketMixture.lean](Certificate/IndependentShapeBracketMixture.lean),
+  and [LocalRootSymmetry.lean](Certificate/LocalRootSymmetry.lean).

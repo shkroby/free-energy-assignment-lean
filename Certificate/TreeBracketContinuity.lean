@@ -89,15 +89,20 @@ namespace Certificate
 /-- Mixtures of bounded nonnegative expectations converge when the shape
 probabilities converge pointwise to a probability mass function and the
 expectations converge on each shape. -/
-theorem tendsto_tsum_of_shape_masses {I : Type*} {p : ℕ → I → ℝ} {q : I → ℝ}
+theorem tendsto_tsum_of_shape_subprobabilities {I : Type*} {p : ℕ → I → ℝ} {q : I → ℝ}
     {a : ℕ → I → ℝ} {b : I → ℝ} {M : ℝ}
     (hp : ∀ n, Summable (p n)) (hq : Summable q)
     (hp₀ : ∀ n i, 0 ≤ p n i) (hq₀ : ∀ i, 0 ≤ q i)
-    (hp₁ : ∀ n, ∑' i, p n i = 1) (hq₁ : ∑' i, q i = 1)
+    (hp₁ : ∀ n, ∑' i, p n i ≤ 1) (hq₁ : ∑' i, q i = 1)
     (ha : ∀ n i, a n i ∈ Icc 0 M)
     (hplim : ∀ i, Tendsto (fun n => p n i) atTop (𝓝 (q i)))
     (halim : ∀ i, Tendsto (fun n => a n i) atTop (𝓝 (b i))) :
     Tendsto (fun n => ∑' i, p n i * a n i) atTop (𝓝 (∑' i, q i * b i)) := by
+  have hI : Nonempty I := by
+    by_contra hI
+    have : IsEmpty I := not_nonempty_iff.mp hI
+    simp at hq₁
+  let i₀ := hI.some
   let m (n : ℕ) (i : I) := min (p n i) (q i)
   let r (n : ℕ) (i : I) := p n i - m n i
   have hm₀ (n : ℕ) (i : I) : 0 ≤ m n i := le_min (hp₀ n i) (hq₀ i)
@@ -131,13 +136,28 @@ theorem tendsto_tsum_of_shape_masses {I : Type*} {p : ℕ → I → ℝ} {q : I 
     have hu := (hrw n).tsum_le_tsum (fun i => mul_le_mul_of_nonneg_left (ha n i).2 (hr₀ n i))
       ((hr n).mul_right M)
     rw [tsum_mul_right] at hu
-    have hrsum : (∑' i, r n i) = 1 - ∑' i, m n i := by
+    have hrsum : (∑' i, r n i) ≤ 1 - ∑' i, m n i := by
       dsimp only [r]
-      rw [(hp n).tsum_sub (hm n), hp₁ n]
-    rwa [hrsum] at hu
+      rw [(hp n).tsum_sub (hm n)]
+      exact sub_le_sub_right (hp₁ n) _
+    exact hu.trans (mul_le_mul_of_nonneg_right hrsum ((ha n i₀).1.trans (ha n i₀).2))
   refine (by simpa only [add_zero] using hmain.add hrest :
     Tendsto (fun n => (∑' i, m n i * a n i) + (∑' i, r n i * a n i)) atTop _).congr fun n => ?_
   rw [← (hmw n).tsum_add (hrw n)]
   exact tsum_congr fun i => by dsimp only [r]; ring
+
+/-- A mixture of probability masses is the normalized case of the
+subprobability result. -/
+theorem tendsto_tsum_of_shape_masses {I : Type*} {p : ℕ → I → ℝ} {q : I → ℝ}
+    {a : ℕ → I → ℝ} {b : I → ℝ} {M : ℝ}
+    (hp : ∀ n, Summable (p n)) (hq : Summable q)
+    (hp₀ : ∀ n i, 0 ≤ p n i) (hq₀ : ∀ i, 0 ≤ q i)
+    (hp₁ : ∀ n, ∑' i, p n i = 1) (hq₁ : ∑' i, q i = 1)
+    (ha : ∀ n i, a n i ∈ Icc 0 M)
+    (hplim : ∀ i, Tendsto (fun n => p n i) atTop (𝓝 (q i)))
+    (halim : ∀ i, Tendsto (fun n => a n i) atTop (𝓝 (b i))) :
+    Tendsto (fun n => ∑' i, p n i * a n i) atTop (𝓝 (∑' i, q i * b i)) :=
+  tendsto_tsum_of_shape_subprobabilities hp hq hp₀ hq₀ (fun n ↦ (hp₁ n).le)
+    hq₁ ha hplim halim
 
 end Certificate

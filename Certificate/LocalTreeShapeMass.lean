@@ -117,6 +117,18 @@ private theorem tendsto_none_of_linear_tests {p : ℕ → ℝ} {m : ℝ}
 
     rw [← pow_mul, mul_comm n a, pow_sub₀ _ (sub_pos.mpr hp₁).ne' hsub, div_eq_mul_inv]
 
+/-- The normalized scalar probability factor for a fixed number of
+retained edges and a linearly growing number of rejected tests. -/
+theorem tendsto_normalized_shortEdge_shape_mass {μ : Measure ℝ}
+    {d κ R : ℝ} (hd : 0 < d) (hκ : 0 < κ) (hR : 0 < R) (hμ : SmallCostTail μ κ d)
+    (l r e : ℕ) :
+    Tendsto (fun n : ℕ => (n : ℝ)^e * (shortEdgeProbability μ d κ R n)^e *
+      (1 - shortEdgeProbability μ d κ R n)^((l+r)*n-l*r-e)) atTop
+      (𝓝 ((R^d)^e * Real.exp (-((l+r : ℕ) : ℝ) * R^d))) := by
+  have h := tendsto_scaled_shortEdgeProbability hd hκ hR hμ
+  simpa only [mul_pow, Nat.sub_sub] using
+    (h.pow e).mul (tendsto_none_of_linear_tests h (l+r) (l*r+e))
+
 /-- A single labelled finite tree event has the expected rare-edge
 scaling. The parameters are its fixed edge count and the two fixed
 interior vertex counts. -/
