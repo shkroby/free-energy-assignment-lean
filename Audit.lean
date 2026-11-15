@@ -112,3 +112,9 @@ run_cmd do
 #print axioms Certificate.Overlap.ae_eventually_trimmedAssignment_omittedWeight_div_lt
 #print axioms Certificate.Overlap.tendsto_integral_of_planeShapeTests
 #print axioms Certificate.Overlap.goodRoot_retained_of_placement
+#print axioms Certificate.Overlap.ae_tendsto_trimmedAssignment_badRootFraction
+#print axioms Certificate.CanonicalTree.ae_tendsto_trimmedRootOccupationIterate
+#print axioms Certificate.CanonicalTree.integral_canonicalUnorderedTree_eq_shapeMixture
+#print axioms Certificate.Overlap.canonicalOccupationTests
+#print axioms Certificate.uniformEdgeStatisticBound
+#print axioms Certificate.quenchedOverlapClaim

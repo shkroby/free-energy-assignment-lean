@@ -14,8 +14,10 @@ convergence for every $d>0$ and inverse temperature $\beta>0$. A finite
 positive-order cost moment gives eventual integrability and $L^1$ convergence.
 [Model.lean](Certificate/Model.lean) gives the exact statement and
 [MainReduction.lean](Certificate/MainReduction.lean) proves the hard cavity-law
-existence and uniqueness assertion independently. The overlap development
-below records the parts of the corollary that Lean checks.
+existence and uniqueness assertion independently.
+[FullQuenchedOverlap.lean](Certificate/FullQuenchedOverlap.lean) proves
+`Certificate.quenchedOverlapClaim : Certificate.QuenchedOverlapClaim` for
+the same iid cost model.
 
 ## Verify
 
@@ -91,10 +93,10 @@ declarations. Explicit hypotheses remain visible in the theorem statements.
 
 [OverlapOccupation.lean](Certificate/OverlapOccupation.lean) identifies the
 predicted overlap as the mean sum of squared hard cavity occupations and proves
-that it lies in `(0, 1)`. [OverlapConcentration.lean](Certificate/OverlapConcentration.lean)
-proves the corollary's conditional exponential bound and the almost-sure
-convergence on the infinite product of Gibbs pairs, given the uniform edge
-statistic estimate of the paper.
+that it lies in `(0, 1)`. The uniform edge-statistic estimate gives the
+corollary's quenched exponential bound and almost-sure convergence under
+the product law of Gibbs pairs.
+See [FullQuenchedOverlap.lean](Certificate/FullQuenchedOverlap.lean).
 
 [OverlapTrim.lean](Certificate/OverlapTrim.lean) bounds the number of edges
 discarded at large degrees and the number that can change when one cost row
@@ -116,6 +118,10 @@ comparison and Chernoff's inequality.
 passes the predicted overlap from the soft cavity laws to the hard law.
 [OverlapThreeOccupations.lean](Certificate/OverlapThreeOccupations.lean)
 bounds the probability of small occupations among the first three arrivals.
-[OverlapAssembly.lean](Certificate/OverlapAssembly.lean) uses the finite
-estimates to prove the overlap corollary conditional on the two empirical
-occupation tests and their corresponding retained pressure estimate.
+[OverlapTrimShapeLimit.lean](Certificate/OverlapTrimShapeLimit.lean)
+identifies the finite-depth limits of both empirical occupation tests.
+[OverlapCanonicalShapeTests.lean](Certificate/OverlapCanonicalShapeTests.lean)
+connects those limits to the degree-trimmed Poisson tree using the unordered
+marked-tree law.
+[OverlapEmpiricalTreeAssembly.lean](Certificate/OverlapEmpiricalTreeAssembly.lean)
+removes the degree and length cutoffs and passes to zero fugacity.

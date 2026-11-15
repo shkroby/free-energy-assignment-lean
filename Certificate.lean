@@ -70,6 +70,7 @@ import Certificate.Endpoints
 import Certificate.FiniteLocalBracketLimit
 import Certificate.FiniteRootBounds
 import Certificate.FreeEnergy
+import Certificate.FullQuenchedOverlap
 import Certificate.HardBetheIntegrability
 import Certificate.HardCouplingContinuity
 import Certificate.HardCouplingDenominator

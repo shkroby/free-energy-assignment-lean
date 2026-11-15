@@ -25,14 +25,19 @@ private theorem parentCoordinate_injective (shape : PlaneShape) :
       congrArg (fun p : Vertex × ℕ => p.1 ++ [p.2]) h
     _ = _ := List.dropLast_append_getLast _
 
-private def readShapeMarks (shape : PlaneShape) (T : Environment) (v : shape.NonRootSlot) : ℝ :=
+def readShapeMarks (shape : PlaneShape) (T : Environment) (v : shape.NonRootSlot) : ℝ :=
   T (parentCoordinate v).1 (parentCoordinate v).2
 
-private theorem measurable_readShapeMarks (shape : PlaneShape) : Measurable (readShapeMarks shape) :=
+theorem readShapeMarks_child (shape : PlaneShape) (T : Environment) (v : Vertex) (i : ℕ)
+    (hi : v ++ [i] ∈ shape.slots) :
+    readShapeMarks shape T ⟨⟨v ++ [i], hi⟩, by simp⟩ = T v i := by
+  simp [readShapeMarks, parentCoordinate]
+
+theorem measurable_readShapeMarks (shape : PlaneShape) : Measurable (readShapeMarks shape) :=
   measurable_pi_iff.mpr fun v =>
     (measurable_pi_apply (parentCoordinate v).2).comp (measurable_pi_apply (parentCoordinate v).1)
 
-private theorem map_readShapeMarks {d R : ℝ} (hd : 0 < d) (hR : 0 < R) (shape : PlaneShape) :
+theorem map_readShapeMarks {d R : ℝ} (hd : 0 < d) (hR : 0 < R) (shape : PlaneShape) :
     (Measure.infinitePi (fun _ : Vertex => independentLengthSequence d R)).map (readShapeMarks shape) =
       Measure.infinitePi (fun _ : shape.NonRootSlot => truncatedIntensity d R) := by
   let μ := truncatedIntensity d R
