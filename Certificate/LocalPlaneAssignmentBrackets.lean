@@ -23,7 +23,7 @@ private theorem ends_eq_of_endpoints {n : ℕ} {e : Fin n × Fin n} {u v : Plane
   · rfl
   · exact Finset.pair_comm _ _
 
-private theorem eq_of_ends_eq {n : ℕ} {e f : Fin n × Fin n}
+theorem eq_of_ends_eq {n : ℕ} {e f : Fin n × Fin n}
     (h : Tree.Bipartite.ends e = Tree.Bipartite.ends f) : e = f := by
   have hL : Sum.inl e.1 ∈ Tree.Bipartite.ends f :=
     h ▸ (by simp [Tree.Bipartite.ends] : Sum.inl e.1 ∈ Tree.Bipartite.ends e)
@@ -42,15 +42,13 @@ private theorem retained_iff {n : ℕ} {κ : ℝ} (e : Fin n × Fin n) (hκ : 0 
     C (e.1.val, e.2.val) ≤ R / lengthScale d κ n
   rw [mul_comm, le_div_iff₀ hs]
 
-/-- On the cylinder of an ordered graph placement both weighted brackets
-are exactly the continuous test of its retained lengths. -/
-theorem cutoffRootBounds_eq_shapeBracket (shape : PlaneShape) {n : ℕ} (root : Fin n)
-    (p : shape.OrderedPlacement root) (β d κ R z : ℝ) (hκ : 0 < κ) {C : CostArray}
+/-- The incidence and weights realized by an ordered assignment placement. -/
+noncomputable def cutoffPlacementLocalEdges (shape : PlaneShape) {n : ℕ} (root : Fin n)
+    (p : shape.OrderedPlacement root) (β d κ R : ℝ) (hκ : 0 < κ) {C : CostArray}
     (hC : C ∈ shape.placementEvent root p (Iic (R / lengthScale d κ n))) :
-    let G := cutoffAssignmentGraph β d κ R n C
-    Tree.finiteRootBounds G.ends G.edges G.weight z shape.depth G.vertices (Sum.inl root) =
-      shape.shapeBracket β z (labelledNeighborhoodLengths d κ
-        (shape.nonRootIndex.trans (shape.placementEdgeEquiv root p)) C) := by
+    LocalEdges shape (fun v => ofLex (shape.placementLabel root p v)) Tree.Bipartite.ends
+      (retainedEdges d κ R n C) (fun e => Real.exp (-β * edgeLength d κ n C e)) β
+      (labelledNeighborhoodLengths d κ (shape.nonRootIndex.trans (shape.placementEdgeEquiv root p)) C) := by
   classical
   let A := Iic (R / lengthScale d κ n)
   let label := shape.placementLabel root p
@@ -112,7 +110,19 @@ theorem cutoffRootBounds_eq_shapeBracket (shape : PlaneShape) {n : ℕ} (root : 
       refine ⟨i, eq_of_ends_eq ((hends v hv hd i).trans ?_)⟩
       rw [show vLabel (v ++ [i.val]) = ofLex w from congrArg ofLex hi]
       exact (ends_eq_of_endpoints hew).symm
-  have hvroot : vLabel [] = Sum.inl root := congrArg ofLex (shape.placementLabel_root root p)
+  exact H
+
+/-- On the cylinder of an ordered graph placement both weighted brackets
+are exactly the continuous test of its retained lengths. -/
+theorem cutoffRootBounds_eq_shapeBracket (shape : PlaneShape) {n : ℕ} (root : Fin n)
+    (p : shape.OrderedPlacement root) (β d κ R z : ℝ) (hκ : 0 < κ) {C : CostArray}
+    (hC : C ∈ shape.placementEvent root p (Iic (R / lengthScale d κ n))) :
+    let G := cutoffAssignmentGraph β d κ R n C
+    Tree.finiteRootBounds G.ends G.edges G.weight z shape.depth G.vertices (Sum.inl root) =
+      shape.shapeBracket β z (labelledNeighborhoodLengths d κ
+        (shape.nonRootIndex.trans (shape.placementEdgeEquiv root p)) C) := by
+  let H := shape.cutoffPlacementLocalEdges root p β d κ R hκ hC
+  have hvroot : ofLex (shape.placementLabel root p []) = Sum.inl root := congrArg ofLex (shape.placementLabel_root root p)
   have heq := finiteRootBounds_eq_shapeBracket H z Finset.univ (fun _ _ => Finset.mem_univ _)
   rw [hvroot] at heq
   exact heq

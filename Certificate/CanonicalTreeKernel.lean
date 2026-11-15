@@ -75,11 +75,11 @@ theorem measurable_upperFor {K : ℝ → ℝ} (hK : Measurable K) (d z : ℝ) (v
     Measurable (upperFor K d z v) :=
   Measurable.iInf fun n => (measurable_depthFor hK d z n v).snd
 
-private theorem lowerFor_branch (K : ℝ → ℝ) (d z : ℝ) (v : Vertex) (ω : Environment) (i : ℕ) :
+theorem lowerFor_branch (K : ℝ → ℝ) (d z : ℝ) (v : Vertex) (ω : Environment) (i : ℕ) :
     lowerFor K d z v (branch i ω) = lowerFor K d z (i :: v) ω := by
   simp only [lowerFor, depthFor_branch]
 
-private theorem upperFor_branch (K : ℝ → ℝ) (d z : ℝ) (v : Vertex) (ω : Environment) (i : ℕ) :
+theorem upperFor_branch (K : ℝ → ℝ) (d z : ℝ) (v : Vertex) (ω : Environment) (i : ℕ) :
     upperFor K d z v (branch i ω) = upperFor K d z (i :: v) ω := by
   simp only [upperFor, depthFor_branch]
 

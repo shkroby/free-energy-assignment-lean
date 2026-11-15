@@ -30,7 +30,7 @@ namespace Certificate.CanonicalTree
 
 open LocalExploration
 
-private theorem measurableSet_cutoffOffspringNat_eq (d R : ℝ) (k : ℕ) :
+theorem measurableSet_cutoffOffspringNat_eq (d R : ℝ) (k : ℕ) :
     MeasurableSet {E | cutoffOffspringNat d R E = k} := by
   classical
   let A (j : ℕ) : Set Spacings := {E | cutoffOffspring d R E = (j : ℝ≥0∞)}

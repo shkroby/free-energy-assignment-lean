@@ -13,7 +13,7 @@ namespace Certificate.CanonicalTree
 
 open LocalExploration
 
-private theorem shapeEvents_disjoint {n k : ℕ} (root : Fin n) (A : Set ℝ) :
+theorem shapeEvents_disjoint {n k : ℕ} (root : Fin n) (A : Set ℝ) :
     Pairwise (Disjoint on fun c : PlaneShapeCode k => c.shape.shapeEvent root A) := by
   intro a b hab
   apply Set.disjoint_left.mpr

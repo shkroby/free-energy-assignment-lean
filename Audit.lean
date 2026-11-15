@@ -104,3 +104,11 @@ run_cmd do
 #print axioms Certificate.Overlap.card_trimDegrees_changedEdges_le
 #print axioms Certificate.Overlap.ae_eventually_longAssignmentMass_div_lt
 #print axioms Certificate.quenchedOverlap_of_uniformEdgeStatisticBound
+#print axioms Certificate.Overlap.simplex_hessian_ge_l1
+#print axioms Certificate.Overlap.finiteBethe_perturbed_bound
+#print axioms Certificate.OverlapBelief.logPartition_tilt_le
+#print axioms Certificate.CanonicalTree.tendsto_cavityOverlap_of_hard_unique
+#print axioms Certificate.CanonicalTree.eventually_measure_firstThree_rootOccupation_small
+#print axioms Certificate.Overlap.ae_eventually_trimmedAssignment_omittedWeight_div_lt
+#print axioms Certificate.Overlap.tendsto_integral_of_planeShapeTests
+#print axioms Certificate.Overlap.goodRoot_retained_of_placement

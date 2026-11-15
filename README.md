@@ -99,5 +99,23 @@ statistic estimate of the paper.
 [OverlapTrim.lean](Certificate/OverlapTrim.lean) bounds the number of edges
 discarded at large degrees and the number that can change when one cost row
 changes. [OverlapDiscardedWeights.lean](Certificate/OverlapDiscardedWeights.lean)
-proves almost-sure control of the mass above the length cutoff. The uniform
-edge statistic estimate remains an explicit hypothesis of the overlap endpoint.
+proves almost-sure control of the mass above the length cutoff.
+[OverlapDegreeTail.lean](Certificate/OverlapDegreeTail.lean) combines the
+length estimate with the high-degree cutoff to bound the actual omitted weight.
+
+[OverlapSimplexTilt.lean](Certificate/OverlapSimplexTilt.lean) proves the
+finite Bethe entropy and perturbation bounds.
+[OverlapBeliefTilt.lean](Certificate/OverlapBeliefTilt.lean) combines the
+contracting belief messages, stationary Bethe occupations, and the finite
+locally tree-like pressure comparison.
+[OverlapGibbsTilt.lean](Certificate/OverlapGibbsTilt.lean) transfers the
+soft pressure estimate to Gibbs edge statistics by exact partition function
+comparison and Chernoff's inequality.
+
+[OverlapOccupationLimit.lean](Certificate/OverlapOccupationLimit.lean)
+passes the predicted overlap from the soft cavity laws to the hard law.
+[OverlapThreeOccupations.lean](Certificate/OverlapThreeOccupations.lean)
+bounds the probability of small occupations among the first three arrivals.
+[OverlapAssembly.lean](Certificate/OverlapAssembly.lean) uses the finite
+estimates to prove the overlap corollary conditional on the two empirical
+occupation tests and their corresponding retained pressure estimate.

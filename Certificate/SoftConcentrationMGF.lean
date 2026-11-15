@@ -142,7 +142,7 @@ private theorem clampedPressure_eq_of_nonneg (β d κ t : ℝ) (n : ℕ) (C : Co
   rw [hw]
   rfl
 
-private theorem centered_mgf_pullback
+theorem centered_mgf_pullback
     {Ω Ω' : Type*} [MeasurableSpace Ω] [MeasurableSpace Ω'] {P : Measure Ω} {Q : Measure Ω'}
     {g : Ω → ℝ} {f : Ω' → ℝ} {T : Ω → Ω'} (hT : MeasurePreserving T P Q)
     (hf : Measurable f) (heq : f ∘ T =ᵐ[P] g) {c : ℝ≥0}

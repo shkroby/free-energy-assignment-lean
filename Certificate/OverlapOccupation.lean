@@ -188,12 +188,14 @@ theorem integral_rootOccupation_sq_mem_Ioo {β d : ℝ} {H : Measure ℝ}
   rw [integral_sub (integrable_const _) hfi, integral_const, probReal_univ, one_smul] at hc
   exact ⟨ha, sub_pos.mp hc⟩
 
-/-- The paper's integral is the mean squared occupation sum on the hard cavity tree. -/
-theorem cavityOverlap_eq_integral_rootOccupation_sq {β d : ℝ} (hd : 0 < d) {H : Measure ℝ}
-    (hH : IsCavityLaw β d H) :
-    cavityOverlap β d H = ∫ ω, ∑' i, (rootOccupation β d 0 ω i)^2 ∂markedSpacings H := by
-  let : IsProbabilityMeasure H := hH.1
-  let hp := ae_positive_cavity_marks hH
+/-- The inserted-edge integral is the mean squared occupation sum for a fixed-point law. -/
+theorem cavityOverlap_eq_integral_rootOccupation_sq_of_fixedPoint {β d z : ℝ}
+    (hd : 0 < d) (hz : 0 ≤ z) {H : Measure ℝ} [IsProbabilityMeasure H]
+    (hp : ∀ᵐ x ∂H, 0 < x)
+    (hfin : ∀ᵐ ω ∂markedSpacings H, arrivalWeightedSum β d ω ≠ ∞)
+    (hLaw : (markedSpacings H).map (arrivalSoftOutput β d z) = H)
+    (hsq : ∀ᵐ ω ∂markedSpacings H, Summable (fun i => (rootOccupation β d z ω i)^2)) :
+    cavityOverlap β d H = ∫ ω, ∑' i, (rootOccupation β d z ω i)^2 ∂markedSpacings H := by
   have hp' : ∀ᵐ p ∂H.prod H, 0 < p.1 ∧ 0 < p.2 :=
     ((measurePreserving_fst (μ := H) (ν := H)).quasiMeasurePreserving.tendsto_ae.eventually hp).and
       ((measurePreserving_snd (μ := H) (ν := H)).quasiMeasurePreserving.tendsto_ae.eventually hp)
@@ -211,11 +213,9 @@ theorem cavityOverlap_eq_integral_rootOccupation_sq {β d : ℝ} (hd : 0 < d) {H
     ofReal_integral_eq_lintegral_ofReal (hi x) (Eventually.of_forall fun _ => sq_nonneg _)
   have hM : Measurable (fun x => ∫ p, overlapEdgeSquare β x p ∂H.prod H) :=
     (measurable_overlapEdgeSquare β).stronglyMeasurable.integral_prod_right'.measurable
-  have hsM : Measurable (fun ω : ArrivalConfiguration => ∑' i, (rootOccupation β d 0 ω i)^2) :=
-    Measurable.tsum fun i => (measurable_rootOccupation β d 0 i).pow_const 2
-  have hMecke := lintegral_rootOccupation_sq hd (z := 0) le_rfl H hp
-    ((ae_hard_arrivalWeightedSum_spec hH).mono fun _ h => h.1)
-    (map_arrivalSoftOutput_zero_of_IsCavityLaw hH)
+  have hsM : Measurable (fun ω : ArrivalConfiguration => ∑' i, (rootOccupation β d z ω i)^2) :=
+    Measurable.tsum fun i => (measurable_rootOccupation β d z i).pow_const 2
+  have hMecke := lintegral_rootOccupation_sq hd hz H hp hfin hLaw
   have hn : 0 ≤ᵐ[intensity d] (fun x => ∫ p, overlapEdgeSquare β x p ∂H.prod H) :=
     Eventually.of_forall fun _ => integral_nonneg fun _ => sq_nonneg _
   unfold cavityOverlap
@@ -225,9 +225,19 @@ theorem cavityOverlap_eq_integral_rootOccupation_sq {β d : ℝ} (hd : 0 < d) {H
     (Eventually.of_forall fun _ => tsum_nonneg fun _ => sq_nonneg _) hsM.aestronglyMeasurable]
   congr 1
   apply lintegral_congr_ae
-  filter_upwards [ae_hard_rootOccupation_probability hH] with ω ho
-  exact (ENNReal.ofReal_tsum_of_nonneg (fun _ => sq_nonneg _)
-    (strict_square_sum ho.1 ho.2.1 ho.2.2).1).symm
+  filter_upwards [hsq] with ω ho
+  exact (ENNReal.ofReal_tsum_of_nonneg (fun _ => sq_nonneg _) ho).symm
+
+/-- At zero fugacity, the overlap is the mean of the hard root
+occupation square sum. -/
+theorem cavityOverlap_eq_integral_rootOccupation_sq {β d : ℝ} (hd : 0 < d) {H : Measure ℝ}
+    (hH : IsCavityLaw β d H) :
+    cavityOverlap β d H = ∫ ω, ∑' i, (rootOccupation β d 0 ω i)^2 ∂markedSpacings H := by
+  let : IsProbabilityMeasure H := hH.1
+  exact cavityOverlap_eq_integral_rootOccupation_sq_of_fixedPoint hd le_rfl
+    (ae_positive_cavity_marks hH) ((ae_hard_arrivalWeightedSum_spec hH).mono fun _ h => h.1)
+    (map_arrivalSoftOutput_zero_of_IsCavityLaw hH)
+    ((ae_hard_rootOccupation_probability hH).mono fun _ h => (strict_square_sum h.1 h.2.1 h.2.2).1)
 
 /-- The predicted overlap is strictly between zero and one. -/
 theorem cavityOverlap_mem_Ioo {β d : ℝ} (hd : 0 < d) {H : Measure ℝ}
