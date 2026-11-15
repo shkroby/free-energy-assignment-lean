@@ -111,6 +111,10 @@ import Certificate.LocalZeroCutoffBrackets
 import Certificate.MainReduction
 import Certificate.MarkedTail
 import Certificate.Model
+import Certificate.OverlapConcentration
+import Certificate.OverlapDiscardedWeights
+import Certificate.OverlapOccupation
+import Certificate.OverlapTrim
 import Certificate.PoissonArrival
 import Certificate.PoissonArrivalCount
 import Certificate.PoissonArrivalMecke

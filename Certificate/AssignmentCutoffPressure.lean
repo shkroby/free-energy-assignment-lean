@@ -188,7 +188,7 @@ private theorem integrable_softAssignmentPressure {μ : Measure ℝ} [IsProbabil
     change Measurable (fun C => Z C t)
     exact h.of_uncurry_right (y := t)
 
-private theorem integrable_gamma_tail {β d : ℝ} (hβ : 0 < β) (hd : 0 < d) {R : ℝ}
+theorem integrable_gamma_tail {β d : ℝ} (hβ : 0 < β) (hd : 0 < d) {R : ℝ}
     (hR : 0 ≤ R) :
     IntegrableOn (fun x : ℝ => β * x ^ d * Real.exp (-β * x)) (Ioi R) := by
   have hi := integrableOn_rpow_mul_exp_neg_mul_rpow

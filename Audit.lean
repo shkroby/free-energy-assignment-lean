@@ -99,3 +99,8 @@ run_cmd do
 #print axioms Certificate.CanonicalTree.tendsto_expected_cutoffRowBracket_mixture
 #print axioms Certificate.CanonicalTree.tendsto_expected_cutoffMeanRootBounds
 #print axioms Certificate.freeEnergyClaim
+#print axioms Certificate.lintegral_rootOccupation_sq
+#print axioms Certificate.cavityOverlap_mem_Ioo
+#print axioms Certificate.Overlap.card_trimDegrees_changedEdges_le
+#print axioms Certificate.Overlap.ae_eventually_longAssignmentMass_div_lt
+#print axioms Certificate.quenchedOverlap_of_uniformEdgeStatisticBound

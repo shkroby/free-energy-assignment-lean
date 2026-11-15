@@ -1,7 +1,7 @@
 # Free energy of bipartite random assignment — Lean companion
 
 Machine-checked companion to Jacob Shkrob's
-[*Thermodynamic limit of the bipartite random assignment problem*](https://github.com/shkroby/free-energy-assignment/blob/30a07cac13c213fe6337722b3626c411ff246eee/main.tex).
+[*Thermodynamic limit of the bipartite random assignment problem*](https://github.com/shkroby/free-energy-assignment/blob/b9dcc5970336deb08d030ae230c0308ecba4905b/main.tex).
 The model uses a square bipartite graph with an infinite array of iid
 nonnegative costs, $F(s)\sim\kappa s^d$ at zero, and length scale
 $(\kappa n)^{1/d}$. The Poisson tree uses independent rate-one exponential
@@ -14,8 +14,8 @@ convergence for every $d>0$ and inverse temperature $\beta>0$. A finite
 positive-order cost moment gives eventual integrability and $L^1$ convergence.
 [Model.lean](Certificate/Model.lean) gives the exact statement and
 [MainReduction.lean](Certificate/MainReduction.lean) proves the hard cavity-law
-existence and uniqueness assertion independently. The companion covers the
-free-energy theorem. The manuscript's quenched overlap corollary is separate.
+existence and uniqueness assertion independently. The overlap development
+below records the parts of the corollary that Lean checks.
 
 ## Verify
 
@@ -85,3 +85,19 @@ declarations. Explicit hypotheses remain visible in the theorem statements.
   See [FiniteLocalBracketLimit.lean](Certificate/FiniteLocalBracketLimit.lean),
   [IndependentShapeBracketMixture.lean](Certificate/IndependentShapeBracketMixture.lean),
   and [LocalRootSymmetry.lean](Certificate/LocalRootSymmetry.lean).
+
+
+## Quenched overlap
+
+[OverlapOccupation.lean](Certificate/OverlapOccupation.lean) identifies the
+predicted overlap as the mean sum of squared hard cavity occupations and proves
+that it lies in `(0, 1)`. [OverlapConcentration.lean](Certificate/OverlapConcentration.lean)
+proves the corollary's conditional exponential bound and the almost-sure
+convergence on the infinite product of Gibbs pairs, given the uniform edge
+statistic estimate of the paper.
+
+[OverlapTrim.lean](Certificate/OverlapTrim.lean) bounds the number of edges
+discarded at large degrees and the number that can change when one cost row
+changes. [OverlapDiscardedWeights.lean](Certificate/OverlapDiscardedWeights.lean)
+proves almost-sure control of the mass above the length cutoff. The uniform
+edge statistic estimate remains an explicit hypothesis of the overlap endpoint.
