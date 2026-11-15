@@ -145,8 +145,9 @@ theorem isProbabilityMeasure_rootPairLaw (β d z : ℝ) :
   let : IsProbabilityMeasure law := isProbabilityMeasure_law
   exact Measure.isProbabilityMeasure_map (measurable_rootPair β d z).aemeasurable
 
-theorem ae_boundary_limits {β d z : ℝ} (hβ : 0 < β) (hd : 0 < d) (hz : 0 < z) :
-    ∀ᵐ ω ∂law, ∀ v,
+theorem boundary_limits_of_summable_weight {β d z : ℝ} {ω : Environment}
+    (hz : 0 < z) (hw : ∀ v, Summable (weight β d ω v)) :
+    ∀ v,
       Tendsto (fun n => (depth β d z n v ω).1) atTop (𝓝 (lower β d z v ω)) ∧
       Tendsto (fun n => (depth β d z n v ω).2) atTop (𝓝 (upper β d z v ω)) ∧
       0 < lower β d z v ω ∧ lower β d z v ω ≤ upper β d z v ω ∧
@@ -155,7 +156,6 @@ theorem ae_boundary_limits {β d z : ℝ} (hβ : 0 < β) (hd : 0 < d) (hz : 0 < 
         (fun i => upper β d z (child v i) ω) ∧
       upper β d z v ω = TreeBoundary.update z (weight β d ω v)
         (fun i => lower β d z (child v i) ω) := by
-  filter_upwards [ae_summable_weight hβ hd] with ω hw
   let hw₀ := weight_nonneg β d ω
   obtain ⟨L, U, h⟩ := TreeBoundary.exists_boundary_limits z child (weight β d ω) hz hw hw₀
   have hL (v : Vertex) : lower β d z v ω = L v := by
@@ -179,6 +179,18 @@ theorem ae_boundary_limits {β d z : ℝ} (hβ : 0 < β) (hd : 0 < d) (hz : 0 < 
   intro v
   simp only [hL, hU]
   exact h v
+
+theorem ae_boundary_limits {β d z : ℝ} (hβ : 0 < β) (hd : 0 < d) (hz : 0 < z) :
+    ∀ᵐ ω ∂law, ∀ v,
+      Tendsto (fun n => (depth β d z n v ω).1) atTop (𝓝 (lower β d z v ω)) ∧
+      Tendsto (fun n => (depth β d z n v ω).2) atTop (𝓝 (upper β d z v ω)) ∧
+      0 < lower β d z v ω ∧ lower β d z v ω ≤ upper β d z v ω ∧
+      upper β d z v ω ≤ z⁻¹ ∧
+      lower β d z v ω = TreeBoundary.update z (weight β d ω v)
+        (fun i => upper β d z (child v i) ω) ∧
+      upper β d z v ω = TreeBoundary.update z (weight β d ω v)
+        (fun i => lower β d z (child v i) ω) :=
+  (ae_summable_weight hβ hd).mono fun _ hw => boundary_limits_of_summable_weight hz hw
 
 /-- At the root the child messages can be evaluated as root messages of
 the corresponding branch environments. -/

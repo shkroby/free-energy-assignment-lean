@@ -14,7 +14,7 @@ open scoped BigOperators Topology
 
 namespace Certificate
 
-private theorem measurable_assignment_Z (β d κ : ℝ) (n : ℕ)
+theorem measurable_assignment_Z (β d κ : ℝ) (n : ℕ)
     (vertices : Finset (Fin n ⊕ Fin n)) :
     Measurable (fun p : CostArray × ℝ => Tree.monomerPartition Tree.Bipartite.ends
       vertices (univ : Finset (Fin n × Fin n))
@@ -59,7 +59,7 @@ theorem integrable_assignment_total_weight {μ : Measure ℝ} [IsProbabilityMeas
   change Integrable (fun C => ∑ e : Fin n × Fin n, (assignmentGraph β d κ n C).weight e) (iidCosts μ)
   exact integrable_finsetSum _ (fun e _ => integrable_assignment_edge hμ hβ hκ d n e)
 
-private theorem expected_assignment_total_weight_le {μ : Measure ℝ} [IsProbabilityMeasure μ]
+theorem expected_assignment_total_weight_le {μ : Measure ℝ} [IsProbabilityMeasure μ]
     {β d κ : ℝ} (hβ : 0 < β) (hd : 0 < d) (hκ : 0 < κ) (hμ : SmallCostTail μ κ d) :
     ∃ A : ℝ, ∀ n : ℕ, 0 < n →
       (∫ C, ∑ e ∈ (assignmentGraph β d κ n C).edges, (assignmentGraph β d κ n C).weight e

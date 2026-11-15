@@ -13,7 +13,8 @@ namespace Certificate.Tree
 
 variable {V E : Type*} [DecidableEq V] [DecidableEq E]
 
-private noncomputable def otherEnd (ends : E → Finset V) (e : E) (v : V) : V :=
+/-- The opposite endpoint of an incident two-endpoint edge. -/
+noncomputable def otherEnd (ends : E → Finset V) (e : E) (v : V) : V :=
   if h : ((ends e).erase v).Nonempty then h.choose else v
 
 omit [DecidableEq E] in
@@ -49,7 +50,7 @@ noncomputable def finiteRootBounds (ends : E → Finset V) (edges : Finset E)
      (z + ∑ e ∈ incident ends vertices edges v, w e * (B e).1)⁻¹)
 
 omit [DecidableEq E] in
-private theorem finiteRootBounds_mem (ends : E → Finset V) (edges : Finset E)
+theorem finiteRootBounds_mem (ends : E → Finset V) (edges : Finset E)
     (w : E → ℝ) (hw : ∀ e, 0 ≤ w e) {z : ℝ} (hz : 0 < z)
     (depth : ℕ) (vertices : Finset V) (v : V) :
     0 ≤ (finiteRootBounds ends edges w z depth vertices v).1 ∧

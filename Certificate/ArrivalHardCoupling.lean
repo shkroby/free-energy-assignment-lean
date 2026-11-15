@@ -13,7 +13,8 @@ open scoped ENNReal
 
 namespace Certificate
 
-private theorem markedArrival_eval_preserving {Y : Type*} [MeasurableSpace Y]
+/-- Each indexed mark on the canonical arrival sequence has the mark law. -/
+theorem markedArrival_eval_preserving {Y : Type*} [MeasurableSpace Y]
     (μ : Measure Y) [IsProbabilityMeasure μ] (i : ℕ) :
     MeasurePreserving (fun ω : (ℕ → ℝ) × (ℕ → Y) => ω.2 i)
       (markedArrivalSequenceLaw μ) μ := by
@@ -22,7 +23,8 @@ private theorem markedArrival_eval_preserving {Y : Type*} [MeasurableSpace Y]
     (measurePreserving_snd (μ := exponentialSpacings)
       (ν := Measure.infinitePi (fun _ : ℕ => μ)))
 
-private theorem markedArrival_projection (ρ : Measure (ℝ × ℝ)) [IsProbabilityMeasure ρ]
+/-- Projecting each iid mark preserves the projected canonical marked law. -/
+theorem markedArrival_projection (ρ : Measure (ℝ × ℝ)) [IsProbabilityMeasure ρ]
     (f : ℝ × ℝ → ℝ) (hf : Measurable f) :
     MeasurePreserving (fun ω : PairedArrivalConfiguration => (ω.1,fun i => f (ω.2 i)))
       (markedArrivalSequenceLaw ρ) (markedSpacings (ρ.map f)) := by
